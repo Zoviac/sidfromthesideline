@@ -1,0 +1,108 @@
+---
+import { sections } from '../sections';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title, description = 'A personal archive of my life and what I have been up to.' } = Astro.props;
+const pageTitle = title ? `${title} · sidfromthesideline` : 'sidfromthesideline';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle}</title>
+	</head>
+	<body>
+		<header>
+			<a class="home" href="/">sidfromthesideline</a>
+			<nav>
+				{Object.entries(sections).map(([key, { label }]) => <a href={`/${key}/`}>{label}</a>)}
+			</nav>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer>© {new Date().getFullYear()} Sidharrth Sivasubramaniam</footer>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--bg: #fbfaf7;
+		--fg: #1d1d1b;
+		--muted: #6b6a66;
+		--accent: #2f6f4f;
+		--rule: #e4e2dc;
+		color-scheme: light dark;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--bg: #151614;
+			--fg: #ecebe6;
+			--muted: #9a9993;
+			--accent: #7cc49c;
+			--rule: #2c2d2a;
+		}
+	}
+	* {
+		box-sizing: border-box;
+	}
+	body {
+		margin: 0 auto;
+		max-width: 42rem;
+		padding: 2rem 1rem 4rem;
+		background: var(--bg);
+		color: var(--fg);
+		font: 1.0625rem/1.65 system-ui, -apple-system, 'Segoe UI', sans-serif;
+	}
+	a {
+		color: var(--accent);
+	}
+	header {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.25rem;
+		align-items: baseline;
+		justify-content: space-between;
+		padding-bottom: 1rem;
+		margin-bottom: 2rem;
+		border-bottom: 1px solid var(--rule);
+	}
+	header .home {
+		font-weight: 700;
+		color: var(--fg);
+		text-decoration: none;
+	}
+	nav {
+		display: flex;
+		gap: 1rem;
+	}
+	h1 {
+		line-height: 1.2;
+	}
+	.muted,
+	time {
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+	ul.entries {
+		list-style: none;
+		padding: 0;
+	}
+	ul.entries li {
+		margin-bottom: 1.25rem;
+	}
+	footer {
+		margin-top: 4rem;
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+</style>

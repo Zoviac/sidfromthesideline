@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { formatDate, sections, type Section } from '../../sections';
+
+export function getStaticPaths() {
+	return Object.keys(sections).map((section) => ({ params: { section } }));
+}
+
+const section = Astro.params.section as Section;
+const { label, blurb } = sections[section];
+const entries = (await getCollection(section, (e) => !e.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title={label} description={blurb}>
+	<h1>{label}</h1>
+	<p class="muted">{blurb}</p>
+	{
+		entries.length === 0 ? (
+			<p class="muted">Nothing here yet.</p>
+		) : (
+			<ul class="entries">
+				{entries.map((e) => (
+					<li>
+						<a href={`/${section}/${e.id}/`}>{e.data.title}</a>
+						<br />
+						<time datetime={e.data.date.toISOString()}>{formatDate(e.data.date, 'medium')}</time>
+						<span class="muted"> — {e.data.summary}</span>
+					</li>
+				))}
+			</ul>
+		)
+	}
+</Base>
